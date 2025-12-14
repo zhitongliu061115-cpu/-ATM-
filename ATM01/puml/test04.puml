@@ -1,0 +1,57 @@
+@startuml
+!theme plain
+skinparam usecase {
+  BackgroundColor<<main>> #D5E8D4
+  BackgroundColor<<extension>> #FFF2CC
+  BackgroundColor<<system>> #FFE6CC
+  BorderColor #82B366
+  BorderThickness 1
+}
+skinparam actor {
+  BackgroundColor #DAE8FC
+  BorderColor #5A6B82
+  BorderThickness 2
+}
+
+left to right direction
+
+'
+'actor ":银行管理员" as ActorAdmin <<actor>>
+'
+
+
+rectangle "银行管理员后台操作" {
+  (添加账户) as UC9 <<main>>
+  (发送开户成功邮件) as UC9_1 <<extension>>
+  (修改账户余额) as UC10 <<main>>
+  (重置用户密码) as UC11 <<main>>
+  (发送密码重置邮件) as UC11_1 <<extension>>
+  (查询账户信息) as UC12 <<main>>
+  (查看所有账户) as UC13 <<main>>
+  (删除账户) as UC14 <<main>>
+  (监控客户端连接) as UC15 <<main>>
+  (查看在线用户列表) as UC15_1 <<main>>
+  (查看系统日志) as UC16 <<main>>
+  (查看数据统计) as UC17 <<main>>
+  (查看账户余额分布图) as UC17_1 <<main>>
+  (查看各账户余额统计图) as UC17_2 <<main>>
+  (查看余额区间占比图) as UC17_3 <<main>>
+  (查看系统总览数据) as UC17_4 <<main>>
+
+
+}
+
+' 参与者连接
+
+'ActorAdmin --> UC9
+'ActorAdmin --> UC10
+'ActorAdmin --> UC11
+'ActorAdmin --> UC12
+'ActorAdmin --> UC13
+'ActorAdmin --> UC14
+'ActorAdmin --> UC15
+'ActorAdmin --> UC16
+'ActorAdmin --> UC17
+
+
+@enduml

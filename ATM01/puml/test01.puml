@@ -1,0 +1,138 @@
+@startuml
+left to right direction
+
+'─── style the big frame ─────────────────────────────────────────────────────
+skinparam rectangle {
+  BorderColor #000000
+  BorderThickness 2
+  BackgroundColor transparent
+}
+
+skinparam usecase {
+  BackgroundColor<<extension>> #FFF2CC
+  BorderColor<<extension>> #D6B656
+  BorderStyle<<extension>> dashed
+  BackgroundColor #D5E8D4
+  BorderColor #82B366
+}
+
+skinparam actor {
+  BackgroundColor #DAE8FC
+  BorderColor #5A6B82
+  BorderThickness 2
+}
+
+'─── actors ───────────────────────────────────────────────────────────────────
+actor "银行客户"       as Customer
+actor "银行管理员"     as Admin
+
+'─── big enclosing frame ────────────────────────────────────────────────────
+rectangle "银行系统用例图" {
+
+  '—— 客户端用例 ————————————————————————————————————————————————————————
+  usecase "用户登录"                   as UC1
+  usecase "输入账户凭证"               as UC1_1
+  usecase "输入图形验证码"             as UC1_2
+
+  usecase "用户注册"                   as UC2
+  usecase "填写注册信息"               as UC2_1
+  usecase "进行邮箱验证"               as UC2_2
+  usecase "发送注册成功邮件"           as UC2_3 <<extension>>
+
+  usecase "查询余额"                   as UC3
+  usecase "存款"                       as UC4
+  usecase "打印存款凭条"               as UC4_1 <<extension>>
+  usecase "取款"                       as UC5
+  usecase "打印取款凭条"               as UC5_1 <<extension>>
+  usecase "转账"                       as UC6
+  usecase "生成转账二维码凭证"         as UC6_1 <<extension>>
+  usecase "打印转账凭条"               as UC6_2 <<extension>>
+  usecase "修改密码"                   as UC7
+  usecase "发送密码修改邮件"           as UC7_1 <<extension>>
+  usecase "退出系统"                   as UC8
+
+  '—— 管理端用例 ————————————————————————————————————————————————————————
+  usecase "添加账户"                   as UC9
+  usecase "发送开户成功邮件"           as UC9_1 <<extension>>
+  usecase "修改账户余额"               as UC10
+  usecase "重置用户密码"               as UC11
+  usecase "发送密码重置邮件"           as UC11_1 <<extension>>
+  usecase "查询账户信息"               as UC12
+  usecase "查看所有账户"               as UC13
+  usecase "删除账户"                   as UC14
+  usecase "监控客户端连接"             as UC15
+  usecase "查看在线用户列表"           as UC15_1
+  usecase "查看系统日志"               as UC16
+  usecase "查看数据统计"               as UC17
+  usecase "查看账户余额分布图"         as UC17_1
+  usecase "查看各账户余额统计图"       as UC17_2
+  usecase "查看余额区间占比图"         as UC17_3
+  usecase "查看系统总览数据"           as UC17_4
+
+  '—— 系统组件 ————————————————————————————————————————————————————————
+  database "数据存储\n(data.txt)"        as DataStorage
+  component "邮件系统"                  as EmailSystem
+
+}
+
+'─── 关联关系 ─────────────────────────────────────────────────────────────────
+Customer --> UC1
+Customer --> UC2
+Customer --> UC3
+Customer --> UC4
+Customer --> UC5
+Customer --> UC6
+Customer --> UC7
+Customer --> UC8
+
+Admin --> UC9
+Admin --> UC10
+Admin --> UC11
+Admin --> UC12
+Admin --> UC13
+Admin --> UC14
+Admin --> UC15
+Admin --> UC16
+Admin --> UC17
+
+' include / extend / dependency
+UC1     --> UC1_1
+UC1     --> UC1_2
+
+UC2     --> UC2_1
+UC2     --> UC2_2
+UC2_3   .> UC2     : <<extend>>
+UC2_3   ..> EmailSystem
+
+UC4_1   .> UC4     : <<extend>>
+UC5_1   .> UC5     : <<extend>>
+UC6_1   .> UC6     : <<extend>>
+UC6_2   .> UC6     : <<extend>>
+UC7_1   .> UC7     : <<extend>>
+UC7_1   ..> EmailSystem
+
+UC9_1   .> UC9     : <<extend>>
+UC9_1   ..> EmailSystem
+UC11_1  .> UC11    : <<extend>>
+UC11_1  ..> EmailSystem
+
+UC15   --> UC15_1
+UC17   --> UC17_1
+UC17   --> UC17_2
+UC17   --> UC17_3
+UC17   --> UC17_4
+
+' 数据存储交互
+UC1_1 ..> DataStorage
+UC2_1 ..> DataStorage
+UC3    ..> DataStorage
+UC4    --> DataStorage
+UC5    --> DataStorage
+UC6    --> DataStorage
+UC7    --> DataStorage
+UC9    --> DataStorage
+UC10   --> DataStorage
+UC11   --> DataStorage
+UC14   --> DataStorage
+
+@enduml

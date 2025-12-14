@@ -1,0 +1,77 @@
+@startuml
+' 顶部到底部布局，结构紧凑
+skinparam classAttributeIconSize 0
+skinparam defaultFontName "微软雅黑"
+skinparam class {
+    BorderColor Black
+    BackgroundColor White
+}
+' —— 页面紧凑 ——
+skinparam nodesep 15        ' 节点（类）之间最小横向间距
+skinparam ranksep 18        ' 层（rank）之间最小纵向间距
+skinparam padding 10        ' 类框内边距
+
+' —— 字体放大 ——
+skinparam DefaultFontName   "微软雅黑"
+skinparam DefaultFontSize   16
+skinparam classFontSize     16
+skinparam classAttributeFontSize 14
+skinparam classHeaderFontSize    16
+
+' —— 缩放／分辨率 ——
+skinparam dpi 150
+
+top to bottom direction
+
+' 类定义
+class ATMClient {
+    +main(args: String[]): void
+}
+
+class ATMService {
+    -socket: Socket
+    -in: BufferedReader
+    -out: PrintWriter
+    +login(account: String, password: String): String
+    +register(account: String, password: String, balance: double, email: String): String
+    +inquire(account: String): String
+    +deposit(account: String, amount: double): String
+    +withdraw(account: String, amount: double): String
+    +transfer(from: String, to: String, amount: double): String
+    +changePassword(account: String, newPassword: String): String
+    +exit(account: String): void
+}
+
+class MainFrame {
+    -atmService: ATMService
+    -currentAccount: String
+    +showCard(cardName: String, account: String): void
+    +getCurrentAccount(): String
+    +getCurrentTime(): String
+    +showPrintReceiptDialog(transactionType: String, fromAccount: String, toAccount: String, amount: double): void
+}
+
+class Account {
+    -accountNumber: String
+    -password: String
+    -balance: double
+    -email: String
+    +getAccountNumber(): String
+    +getBalance(): double
+    +getPassword(): String
+    +getEmail(): String
+    +setAccountNumber(accountNumber: String): void
+    +setBalance(balance: double): void
+    +setEmail(email: String): void
+    +checkPassword(password: String): boolean
+    +deposit(amount: double): void
+    +withdraw(amount: double): boolean
+    +changePassword(newPassword: String): void
+}
+
+' 类关系
+ATMClient --> ATMService : 使用
+MainFrame --> ATMService : 使用
+ATMService ..> Account : 处理
+
+@enduml

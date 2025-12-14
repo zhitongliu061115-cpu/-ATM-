@@ -1,0 +1,114 @@
+@startuml ATM系统类图
+
+!define TITLE ATM Banking System Class Diagram
+
+title ATM银行系统类图
+skinparam layoutAlgorithm dot
+skinparam umlDiagramDirection TB
+
+' —— 页面紧凑 ——
+skinparam nodesep 15        ' 节点（类）之间最小横向间距
+skinparam ranksep 18        ' 层（rank）之间最小纵向间距
+skinparam padding 10        ' 类框内边距
+
+' —— 字体放大 ——
+skinparam DefaultFontName   "微软雅黑"
+skinparam DefaultFontSize   16
+skinparam classFontSize     16
+skinparam classAttributeFontSize 14
+skinparam classHeaderFontSize    16
+
+' —— 缩放／分辨率 ——
+skinparam dpi 150
+
+' —— 强制纵向布局，移除左右布局指令 ——
+left to right direction
+
+database "ATM.Server" {
+    class ATMServer {
+        -PORT : int = 8083
+        -THREADS : int = 10
+        -serverUI : MainFrame
+        -clientIdCounter : AtomicInteger
+        +main(String[] args) : void
+    }
+
+    class service {
+        -DATA : String = "data.txt"
+        -accounts : List<Account>
+        +service()
+        -load() : void
+        -save() : void
+        -findAccount(String accountNumber) : Account
+        +checkIdentify(String accountNumber, String password) : boolean
+        +getBalance(String accountNumber) : double
+        +deposit(String accountNumber, double amount) : String
+        +withdraw(String accountNumber, double amount) : String
+        +transfer(String from, String to, double amount) : String
+        +changePassword(String account, String newPassword) : String
+        +getAccounts() : List<Account>
+        +getAccounts(String accountNumber) : Account
+        +addAccount(String accountNumber, String password, double balance, String email) : String
+        +changeBalance(String accountNumber, double newBalance) : String
+        +deleteAccount(String accountNumber) : String
+        +getBalanceDistribution() : Map<String, Integer>
+        +getAllAccountBalances() : Map<String, Double>
+        +getTotalAccounts() : int
+        +getTotalAssets() : double
+        +getAverageBalance() : double
+    }
+
+    class clientHandler {
+        -socket : Socket
+        -service : service
+        -serverUI : MainFrame
+        -clientId : String
+        -currentUser : String
+        -clientIP : String
+        +clientHandler(Socket socket, service service, MainFrame serverUI, String clientId)
+        +run() : void
+    }
+
+    package "ServerUI" {
+        class MainFrame {
+            -service : service
+            +MainFrame(service service)
+            +logMessage(String message) : void
+            +addConnection(String clientId, String user, String ip) : void
+            +removeConnection(String clientId) : void
+        }
+    }
+}
+
+package "ATM" {
+    class Account {
+        -accountNumber : String
+        -balance : double
+        -password : String
+        -email : String
+        +Account()
+        +Account(String accountNumber, String password, double balance, String email)
+        +getAccountNumber() : String
+        +setAccountNumber(String accountNumber) : void
+        +getBalance() : double
+        +setBalance(double balance) : void
+        +getPassword() : String
+        +getEmail() : String
+        +setEmail(String email) : void
+        +checkPassword(String password) : boolean
+        +deposit(double amount) : void
+        +withdraw(double amount) : boolean
+        +changePassword(String newPassword) : void
+        +toString() : String
+    }
+}
+
+' 关系定义
+
+ATMServer --> service : 创建
+ATMServer --> ATM.Server.ServerUI.MainFrame : 创建
+ATMServer --> clientHandler : 创建
+
+service -left-> Account : 管理
+
+@enduml
